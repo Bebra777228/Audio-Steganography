@@ -89,7 +89,7 @@ with gr.Blocks(title='Аудио-Стеганография', theme=gr.themes.So
             with gr.Column():
                 gr.HTML("<center><h2><a href='https://www.youtube.com/channel/UCHb3fZEVxUisnqLqCrEM8ZA'>YouTube</a></h2></center>")
             with gr.Column():
-                gr.HTML("<center><h2><a href='https://github.com/Bebra777228/Pol-Litres-RVC'>GitHub</a></h2></center>")
+                gr.HTML("<center><h2><a href='https://github.com/Bebra777228/Audio-Steganography'>GitHub</a></h2></center>")
 
     with gr.Group():
         text = gr.Textbox(lines=2, placeholder="Введите свой текст:", label="Текст")
