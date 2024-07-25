@@ -82,13 +82,13 @@ with gr.Blocks(title='Аудио-Стеганография', theme=gr.themes.So
     
     with gr.Group():
         with gr.Row(variant='panel'):
-            with gr.Column(variant='panel'):
+            with gr.Column():
                 gr.HTML("<center><h2><a href='https://t.me/pol1trees'>Telegram Канал</a></h2></center>")
-            with gr.Column(variant='panel'):
+            with gr.Column():
                 gr.HTML("<center><h2><a href='https://t.me/+GMTP7hZqY0E4OGRi'>Telegram Чат</a></h2></center>")
-            with gr.Column(variant='panel'):
+            with gr.Column():
                 gr.HTML("<center><h2><a href='https://www.youtube.com/channel/UCHb3fZEVxUisnqLqCrEM8ZA'>YouTube</a></h2></center>")
-            with gr.Column(variant='panel'):
+            with gr.Column():
                 gr.HTML("<center><h2><a href='https://github.com/Bebra777228/Pol-Litres-RVC'>GitHub</a></h2></center>")
 
     with gr.Group():
@@ -98,8 +98,8 @@ with gr.Blocks(title='Аудио-Стеганография', theme=gr.themes.So
             base_width = gr.Slider(value=512, label="Ширина изображения", visible=False)
             height = gr.Slider(value=256, label="Высота изображения", visible=False)
             max_font_size = gr.Slider(minimum=10, maximum=130, step=5, value=80, label="Размер шрифта")
-            margin = gr.Slider(minimum=5, maximum=50, step=1, value=10, label="Отступ")
-            letter_spacing = gr.Slider(minimum=5, maximum=50, step=1, value=5, label="Расстояние между буквами")
+            margin = gr.Slider(minimum=0, maximum=50, step=1, value=10, label="Отступ")
+            letter_spacing = gr.Slider(minimum=0, maximum=50, step=1, value=5, label="Расстояние между буквами")
         
         generate_button = gr.Button("Сгенерировать")
 
