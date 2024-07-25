@@ -92,7 +92,7 @@ with gr.Blocks(title='Аудио-Стеганография', theme=gr.themes.So
                 gr.HTML("<center><h2><a href='https://github.com/Bebra777228/Pol-Litres-RVC'>GitHub</a></h2></center>")
 
     with gr.Group():
-        text = gr.Textbox(lines=2, placeholder="Введите текст здесь...", label="Текст")
+        text = gr.Textbox(lines=2, placeholder="Введите свой текст:", label="Текст")
 
         with gr.Row(variant='panel'):
             base_width = gr.Slider(value=512, label="Ширина изображения", visible=False)
