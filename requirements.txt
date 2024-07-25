@@ -1,0 +1,6 @@
+gradio==4.29.0
+numpy
+librosa
+matplotlib
+pillow
+soundfile
