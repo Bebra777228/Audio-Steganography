@@ -116,7 +116,8 @@ with gr.Blocks(title='Audio Steganography', theme=gr.themes.Soft(primary_hue="gr
 
         def gradio_interface_fn(text, base_width, height, max_font_size, margin, letter_spacing):
             print("\n", text)
-            return create_audio_with_spectrogram(text, base_width, height, max_font_size, margin, letter_spacing)
+            audio_path, spectrogram_path = create_audio_with_spectrogram(text, base_width, height, max_font_size, margin, letter_spacing)
+            return audio_path, spectrogram_path
 
         generate_button.click(gradio_interface_fn, inputs=[text, base_width, height, max_font_size, margin, letter_spacing], outputs=[output_audio, output_spectrogram])
 
