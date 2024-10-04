@@ -5,23 +5,24 @@ import librosa
 import librosa.display
 import gradio as gr
 import soundfile as sf
-import os
+
+# Constants
+DEFAULT_FONT_PATH = "/usr/share/fonts/truetype/dejavu/DejaVuSans-Bold.ttf"
+DEFAULT_SAMPLE_RATE = 22050
 
 # Function for creating a spectrogram image with text
 def text_to_spectrogram_image(text, base_width=512, height=256, max_font_size=80, margin=10, letter_spacing=5):
-    font_path = "/usr/share/fonts/truetype/dejavu/DejaVuSans-Bold.ttf"
-    if os.path.exists(font_path):
-        font = ImageFont.truetype(font_path, max_font_size)
-    else:
+    try:
+        font = ImageFont.truetype(DEFAULT_FONT_PATH, max_font_size)
+    except IOError:
+        print(f"Font not found at {DEFAULT_FONT_PATH}. Using default font.")
         font = ImageFont.load_default()
 
     image = Image.new('L', (base_width, height), 'black')
     draw = ImageDraw.Draw(image)
-    text_width = 0
-    for char in text:
-        text_bbox = draw.textbbox((0, 0), char, font=font)
-        text_width += text_bbox[2] - text_bbox[0] + letter_spacing
-    text_width -= letter_spacing
+
+    text_width = sum(draw.textbbox((0, 0), char, font=font)[2] - draw.textbbox((0, 0), char, font=font)[0] + letter_spacing for char in text) - letter_spacing
+    text_height = draw.textbbox((0, 0), text[0], font=font)[3] - draw.textbbox((0, 0), text[0], font=font)[1]
 
     if text_width + margin * 2 > base_width:
         width = text_width + margin * 2
@@ -32,7 +33,8 @@ def text_to_spectrogram_image(text, base_width=512, height=256, max_font_size=80
     draw = ImageDraw.Draw(image)
 
     text_x = (width - text_width) // 2
-    text_y = (height - (text_bbox[3] - text_bbox[1])) // 2
+    text_y = (height - text_height) // 2
+
     for char in text:
         draw.text((text_x, text_y), char, font=font, fill='white')
         char_bbox = draw.textbbox((0, 0), char, font=font)
@@ -43,7 +45,7 @@ def text_to_spectrogram_image(text, base_width=512, height=256, max_font_size=80
     return image
 
 # Converting an image to audio
-def spectrogram_image_to_audio(image, sr=22050):
+def spectrogram_image_to_audio(image, sr=DEFAULT_SAMPLE_RATE):
     flipped_image = np.flipud(image)
     S = flipped_image.astype(np.float32) / 255.0 * 100.0
     y = librosa.griffinlim(S)
@@ -54,19 +56,21 @@ def create_audio_with_spectrogram(text, base_width, height, max_font_size, margi
     spec_image = text_to_spectrogram_image(text, base_width, height, max_font_size, margin, letter_spacing)
     y = spectrogram_image_to_audio(spec_image)
     audio_path = 'output.wav'
-    sf.write(audio_path, y, 22050)
+    sf.write(audio_path, y, DEFAULT_SAMPLE_RATE)
     image_path = 'spectrogram.png'
     plt.imsave(image_path, spec_image, cmap='gray')
     return audio_path, image_path
 
 # Function for displaying the spectrogram of an audio file
 def display_audio_spectrogram(audio_path):
-    y, sr = librosa.load(audio_path)
+    y, sr = librosa.load(audio_path, sr=None)
     S = librosa.feature.melspectrogram(y=y, sr=sr)
     S_dB = librosa.power_to_db(S, ref=np.max)
 
     plt.figure(figsize=(10, 4))
-    librosa.display.specshow(S_dB)
+    librosa.display.specshow(S_dB, sr=sr, x_axis='time', y_axis='mel')
+    plt.colorbar(format='%+2.0f dB')
+    plt.title('Mel-frequency spectrogram')
     plt.tight_layout()
 
     spectrogram_path = 'uploaded_spectrogram.png'
@@ -75,7 +79,7 @@ def display_audio_spectrogram(audio_path):
     return spectrogram_path
 
 # Converting a downloaded image to an audio spectrogram
-def image_to_spectrogram_audio(image_path, sr=22050):
+def image_to_spectrogram_audio(image_path, sr=DEFAULT_SAMPLE_RATE):
     image = Image.open(image_path).convert('L')
     image = np.array(image)
     y = spectrogram_image_to_audio(image, sr)
