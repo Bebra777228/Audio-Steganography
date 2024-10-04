@@ -24,16 +24,14 @@ def text_to_spectrogram_image(text, base_width=512, height=256, max_font_size=80
         logging.warning(f"Font not found at {DEFAULT_FONT_PATH}. Using default font.")
         font = ImageFont.load_default()
 
-    image = Image.new('L', (base_width, height), 'black')
-    draw = ImageDraw.Draw(image)
+    draw = ImageDraw.Draw(Image.new('L', (1, 1)))
 
     text_width = sum(draw.textbbox((0, 0), char, font=font)[2] - draw.textbbox((0, 0), char, font=font)[0] + letter_spacing for char in text) - letter_spacing
     text_height = draw.textbbox((0, 0), text[0], font=font)[3] - draw.textbbox((0, 0), text[0], font=font)[1]
 
-    if text_width + margin * 2 > base_width:
-        width = text_width + margin * 2
-    else:
-        width = base_width
+    # Adjust width and height based on text size
+    width = max(base_width, text_width + margin * 2)
+    height = max(height, text_height + margin * 2)
 
     image = Image.new('L', (width, height), 'black')
     draw = ImageDraw.Draw(image)
