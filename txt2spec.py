@@ -5,7 +5,6 @@ import librosa
 import librosa.display
 import gradio as gr
 import soundfile as sf
-import os
 
 # Constants
 DEFAULT_FONT_PATH = "/usr/share/fonts/truetype/dejavu/DejaVuSans-Bold.ttf"
@@ -58,9 +57,19 @@ def create_audio_with_spectrogram(text, base_width, height, max_font_size, margi
     y = spectrogram_image_to_audio(spec_image)
     audio_path = 'output.wav'
     sf.write(audio_path, y, DEFAULT_SAMPLE_RATE)
-    image_path = 'spectrogram.png'
-    plt.imsave(image_path, spec_image, cmap='gray')
-    return audio_path, image_path
+    
+    # Create spectrogram from audio
+    S = librosa.feature.melspectrogram(y=y, sr=DEFAULT_SAMPLE_RATE)
+    S_dB = librosa.power_to_db(S, ref=np.max)
+    plt.figure(figsize=(10, 4))
+    librosa.display.specshow(S_dB, sr=DEFAULT_SAMPLE_RATE, x_axis='time', y_axis='mel')
+    plt.axis('off')
+    plt.tight_layout(pad=0)
+    spectrogram_path = 'spectrogram.png'
+    plt.savefig(spectrogram_path, bbox_inches='tight', pad_inches=0, transparent=True)
+    plt.close()
+    
+    return audio_path, spectrogram_path
 
 # Function for displaying the spectrogram of an audio file
 def display_audio_spectrogram(audio_path):
@@ -70,12 +79,11 @@ def display_audio_spectrogram(audio_path):
 
     plt.figure(figsize=(10, 4))
     librosa.display.specshow(S_dB, sr=sr, x_axis='time', y_axis='mel')
-    plt.colorbar(format='%+2.0f dB')
-    plt.title('Mel-frequency spectrogram')
-    plt.tight_layout()
+    plt.axis('off')
+    plt.tight_layout(pad=0)
 
     spectrogram_path = 'uploaded_spectrogram.png'
-    plt.savefig(spectrogram_path, bbox_inches='tight', pad_inches=0)
+    plt.savefig(spectrogram_path, bbox_inches='tight', pad_inches=0, transparent=True)
     plt.close()
     return spectrogram_path
 
@@ -104,13 +112,13 @@ with gr.Blocks(title='Audio Steganography', theme=gr.themes.Soft(primary_hue="gr
         with gr.Column(variant='panel'):
             with gr.Group():
                 output_audio = gr.Audio(type="filepath", label="Generated audio")
-                output_image = gr.Image(type="filepath", label="Spectrogram")
+                output_spectrogram = gr.Image(type="filepath", label="Spectrogram")
 
         def gradio_interface_fn(text, base_width, height, max_font_size, margin, letter_spacing):
             print("\n", text)
             return create_audio_with_spectrogram(text, base_width, height, max_font_size, margin, letter_spacing)
 
-        generate_button.click(gradio_interface_fn, inputs=[text, base_width, height, max_font_size, margin, letter_spacing], outputs=[output_audio, output_image])
+        generate_button.click(gradio_interface_fn, inputs=[text, base_width, height, max_font_size, margin, letter_spacing], outputs=[output_audio, output_spectrogram])
 
     with gr.Tab("Image to Spectrogram"):
         with gr.Group():
