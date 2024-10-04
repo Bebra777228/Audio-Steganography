@@ -5,6 +5,7 @@ import librosa
 import librosa.display
 import gradio as gr
 import soundfile as sf
+import os
 
 # Constants
 DEFAULT_FONT_PATH = "/usr/share/fonts/truetype/dejavu/DejaVuSans-Bold.ttf"
@@ -74,7 +75,7 @@ def display_audio_spectrogram(audio_path):
     plt.tight_layout()
 
     spectrogram_path = 'uploaded_spectrogram.png'
-    plt.savefig(spectrogram_path)
+    plt.savefig(spectrogram_path, bbox_inches='tight', pad_inches=0)
     plt.close()
     return spectrogram_path
 
