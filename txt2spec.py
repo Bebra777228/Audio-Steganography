@@ -109,16 +109,13 @@ def image_to_spectrogram_audio(image_path, sr=DEFAULT_SAMPLE_RATE):
 
 # Gradio interface
 def gradio_interface_fn(text, base_width, height, max_font_size, margin, letter_spacing):
-    logging.info(f"Generating audio and spectrogram for text: {text}")
     audio_path, spectrogram_path = create_audio_with_spectrogram(text, base_width, height, max_font_size, margin, letter_spacing)
     return audio_path, spectrogram_path
 
 def gradio_image_to_audio_fn(upload_image):
-    logging.info(f"Converting image to audio: {upload_image}")
     return image_to_spectrogram_audio(upload_image)
 
 def gradio_decode_fn(upload_audio):
-    logging.info(f"Generating spectrogram for audio: {upload_audio}")
     return display_audio_spectrogram(upload_audio)
 
 with gr.Blocks(title='Audio Steganography', theme=gr.themes.Soft(primary_hue="green", secondary_hue="green", spacing_size="sm", radius_size="lg")) as txt2spec:
