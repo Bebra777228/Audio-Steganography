@@ -118,7 +118,7 @@ def gradio_image_to_audio_fn(upload_image):
 def gradio_decode_fn(upload_audio):
     return display_audio_spectrogram(upload_audio)
 
-with gr.Blocks(title='Audio Steganography', theme=gr.themes.Soft(primary_hue="green", secondary_hue="green", spacing_size="sm", radius_size="lg")) as txt2spec:
+with gr.Blocks(title='Audio Steganography', css="footer{display:none !important}", theme=gr.themes.Soft(primary_hue="green", secondary_hue="green", spacing_size="sm", radius_size="lg")) as txt2spec:
     with gr.Tab("Text to Spectrogram"):
         with gr.Group():
             text = gr.Textbox(lines=2, placeholder="Enter your text:", label="Text")
@@ -128,7 +128,7 @@ with gr.Blocks(title='Audio Steganography', theme=gr.themes.Soft(primary_hue="gr
                 max_font_size = gr.Slider(minimum=10, maximum=130, step=5, value=80, label="Font size")
                 margin = gr.Slider(minimum=0, maximum=50, step=1, value=10, label="Indent")
                 letter_spacing = gr.Slider(minimum=0, maximum=50, step=1, value=5, label="Letter spacing")
-            generate_button = gr.Button("Generate")
+            generate_button = gr.Button("Generate", variant='primary', size="lg")
 
         with gr.Column(variant='panel'):
             with gr.Group():
@@ -139,24 +139,24 @@ with gr.Blocks(title='Audio Steganography', theme=gr.themes.Soft(primary_hue="gr
 
     with gr.Tab("Image to Spectrogram"):
         with gr.Group():
-            with gr.Row(variant='panel'):
+            with gr.Column():
                 upload_image = gr.Image(type="filepath", label="Upload image")
-                convert_button = gr.Button("Convert to audio")
+                convert_button = gr.Button("Convert to audio", variant='primary', size="lg")
 
-            with gr.Column(variant='panel'):
-                output_audio_from_image = gr.Audio(type="filepath", label="Generated audio")
+        with gr.Column(variant='panel'):
+            output_audio_from_image = gr.Audio(type="filepath", label="Generated audio")
 
-            convert_button.click(gradio_image_to_audio_fn, inputs=[upload_image], outputs=[output_audio_from_image])
+        convert_button.click(gradio_image_to_audio_fn, inputs=[upload_image], outputs=[output_audio_from_image])
 
     with gr.Tab("Audio Spectrogram"):
         with gr.Group():
-            with gr.Row(variant='panel'):
+            with gr.Column():
                 upload_audio = gr.Audio(type="filepath", label="Upload audio", scale=3)
-                decode_button = gr.Button("Show spectrogram", scale=2)
+                decode_button = gr.Button("Show spectrogram", variant='primary', size="lg")
 
-            with gr.Column(variant='panel'):
-                decoded_image = gr.Image(type="filepath", label="Audio Spectrogram")
+        with gr.Column(variant='panel'):
+            decoded_image = gr.Image(type="filepath", label="Audio Spectrogram")
 
-            decode_button.click(gradio_decode_fn, inputs=[upload_audio], outputs=[decoded_image])
+        decode_button.click(gradio_decode_fn, inputs=[upload_audio], outputs=[decoded_image])
 
 txt2spec.launch(share=True)
