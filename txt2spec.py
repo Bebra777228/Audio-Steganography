@@ -1,13 +1,13 @@
-import numpy as np
-import matplotlib.pyplot as plt
-from PIL import Image, ImageDraw, ImageFont
-import librosa
-import librosa.display
-import gradio as gr
-import soundfile as sf
-import os
 import logging
 import tempfile
+
+import gradio as gr
+import librosa
+import librosa.display
+import matplotlib.pyplot as plt
+import numpy as np
+import soundfile as sf
+from PIL import Image, ImageDraw, ImageFont
 
 # Constants
 DEFAULT_FONT_PATH = "/usr/share/fonts/truetype/dejavu/DejaVuSans-Bold.ttf"
